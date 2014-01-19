@@ -1,15 +1,17 @@
 local sqlite3 = require("lsqlite3")
 
-local db = sqlite3.open_memory()
+local dbPath = getPath() .. "mydb"
+
+local db = sqlite3.open(  dbPath )
 
 db:exec[[
   CREATE TABLE test (id INTEGER PRIMARY KEY, content);
 
-  INSERT INTO test VALUES (NULL, 'Hello World');
-  INSERT INTO test VALUES (NULL, 'Hello Lua');
-  INSERT INTO test VALUES (NULL, 'Hello Sqlite3')
+  INSERT INTO test VALUES (1, 'fdsfdsfsfdf')
+  INSERT INTO test VALUES (2, '132132')
 ]]
 
 for row in db:nrows("SELECT * FROM test") do
     print(row.id, row.content)
 end
+

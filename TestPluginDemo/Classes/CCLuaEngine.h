@@ -12,11 +12,18 @@
 #include "cocos2d.h"
 USING_NS_CC;
 #include "lua.hpp"
+#include <string>
+using namespace std;
 
 class CCLuaEngine {
     
     
 public:
+    
+    static string getPath(){
+        
+        return  CCFileUtils::sharedFileUtils()->getWritablePath();
+    }
     
     CCLuaEngine();
     ~CCLuaEngine();

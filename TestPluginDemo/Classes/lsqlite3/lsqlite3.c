@@ -49,6 +49,7 @@
 
 #include "sqlite3.h"
 
+
 /* compile time features */
 #if !defined(SQLITE_OMIT_PROGRESS_CALLBACK)
     #define SQLITE_OMIT_PROGRESS_CALLBACK 0
@@ -56,6 +57,7 @@
 #if !defined(LSQLITE_OMIT_UPDATE_HOOK)
     #define LSQLITE_OMIT_UPDATE_HOOK 0
 #endif
+
 
 typedef struct sdb sdb;
 typedef struct sdb_vm sdb_vm;
@@ -1887,12 +1889,14 @@ static int lsqlite_temp_directory(lua_State *L) {
 
 static int lsqlite_do_open(lua_State *L, const char *filename) {
     sdb *db = newdb(L); /* create and leave in stack */
-
+    
+    
+    printf( "%i\n",sqlite3_open(filename, &db->db));
     if (sqlite3_open(filename, &db->db) == SQLITE_OK) {
         /* database handle already in the stack - return it */
         return 1;
     }
-
+    printf("create db failed");
     /* failed to open database */
     lua_pushnil(L);                             /* push nil */
     lua_pushnumber(L, sqlite3_errcode(db->db));
@@ -1907,6 +1911,12 @@ static int lsqlite_do_open(lua_State *L, const char *filename) {
 
 static int lsqlite_open(lua_State *L) {
     const char *filename = luaL_checkstring(L, 1);
+    
+
+
+    printf("filename is %s \n" , filename);
+    
+    
     return lsqlite_do_open(L, filename);
 }
 

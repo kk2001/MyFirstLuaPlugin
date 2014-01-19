@@ -45,13 +45,24 @@ CCLuaEngine::~CCLuaEngine(){
     
 }
 
+static int l_getPath( lua_State* L ){
+    
+    CCLOG("调用函数");
+    
+    lua_pushstring( L,  CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
+
+    return 1;
+}
 
 
 bool CCLuaEngine::init(){
     
     m_pLuaState = luaL_newstate();
     luaL_openlibs( m_pLuaState );
+    
+    
     luaL_Reg* lib = luax_my_libs;
+    // 调用package.preload函数来对我们要引入的插件进行一个预加载
     lua_getglobal(m_pLuaState, "package");
     lua_getfield(m_pLuaState, -1, "preload");
     
@@ -61,6 +72,9 @@ bool CCLuaEngine::init(){
         
     }
     lua_pop( m_pLuaState, 2);
+    
+    lua_pushcfunction(m_pLuaState,  l_getPath);
+    lua_setglobal( m_pLuaState, "getPath");
     
     std::string path = CCFileUtils::sharedFileUtils()->fullPathForFilename( "my.lua");
     
